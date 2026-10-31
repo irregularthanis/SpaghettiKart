@@ -1,4 +1,9 @@
 Complete resources for learning about SpaghettiKart
+
+For developers, the [architecture guide](architecture/README.md) explains the
+build pipeline, runtime entities, resources, graphics stack, and their
+interaction boundaries.
+
 @htmlonly
 <br>
 <div class="pagebutton">
