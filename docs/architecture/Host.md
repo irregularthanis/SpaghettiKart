@@ -140,4 +140,3 @@ Early extraction failures also terminate with `_Exit`: the global `World`
 object exists, but several singletons its destructor expects have not yet been
 created. This is a concrete reason startup and shutdown order are part of the
 host contract rather than incidental implementation detail.
-

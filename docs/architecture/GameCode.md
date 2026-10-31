@@ -169,4 +169,3 @@ References: [controller publication](../../src/main.c),
   and final shutdown paths use `_Exit` to avoid unsafe static destruction.
 - Frame interpolation may replay rendering matrices, but it does not execute a
   second gameplay update.
-

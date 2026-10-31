@@ -163,4 +163,3 @@ References: [`Engine.cpp`](../../src/port/Engine.cpp),
 | Game storage → host files | Controller Pak operations | Durable save files | Ghost and game data persist across launches |
 | Resource request → archives | O2R path and requested type | Typed native resource | Course texture, display list, audio bank |
 | CVar/UI → game behavior | Persisted host setting | Branch or parameter in game/engine code | Interpolation, culling, AI and rendering options |
-
