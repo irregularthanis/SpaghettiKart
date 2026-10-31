@@ -5,7 +5,8 @@ and project-owned assets into a native application, then connects game logic,
 O2R resources, platform services, audio, input, and modern graphics at runtime.
 
 Start with the [architecture overview](Overview.md). Continue to the detailed
-[build](Build.md), [runtime](Runtime.md), [resource](Resources.md), and
-[graphics](Graphics.md) chapters as needed.
+[build](Build.md) and [runtime](Runtime.md) chapters. Runtime then branches into
+[game code](GameCode.md), the [native host](Host.md), [platform services](Services.md),
+[resources](Resources.md), and [graphics](Graphics.md).
 
 Architecture path: **Index** → [Overview](Overview.md)

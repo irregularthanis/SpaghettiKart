@@ -4,6 +4,7 @@
 
 - [High-level view](#high-level-view)
 - [Runtime entities](#runtime-entities)
+- [Component chapters](#component-chapters)
 - [Startup](#startup)
 - [Frame lifecycle](#frame-lifecycle)
 - [Interaction boundaries](#interaction-boundaries)
@@ -47,13 +48,35 @@ heritage, not a sandbox or separately loaded module.
 | Entity | Responsibility | Primary code |
 | --- | --- | --- |
 | Platform entry | Enters the executable and supplies OS APIs. | [`main()` / `SDL_main()`](../../src/port/Game.cpp) |
-| `GameEngine` | Constructs the host context, mappings, resources, graphics window, audio, and UI. | [`Engine.cpp`](../../src/port/Engine.cpp) |
+| `GameEngine` | Constructs the host context, mappings, resources, graphics window, audio, and UI. | [Native host](Host.md) |
 | libultraship context | Owns configuration, controllers, resource/archive managers, window, GUI, and native audio output. | [libultraship project](https://github.com/Kenix3/libultraship) |
-| Reconstructed game | Runs menu, race, camera, physics, actor, and display-list logic. | [`src/`](../../src), especially [`main.c`](../../src/main.c) |
-| Custom engine | Adds native tracks, actors, editor tools, cameras, registries, and enhancements. | [`src/engine/`](../../src/engine), [`Game.cpp`](../../src/port/Game.cpp) |
-| Resource layer | Resolves base, project, and mod assets into typed native objects. | [`ModManager.cpp`](../../src/engine/mods/ModManager.cpp), [`src/port/resource/`](../../src/port/resource) |
-| Graphics runtime | Interprets N64 display lists, applies interpolation, and drives a native GPU backend. | [`ProcessGfxCommands`](../../src/port/Engine.cpp), [Fast3D](https://github.com/Kenix3/libultraship) |
-| Audio runtime | Produces original-style game audio, mixes HMAS sources, and submits native PCM. | [`Engine.cpp`](../../src/port/Engine.cpp), [`HMAS.cpp`](../../src/port/audio/HMAS.cpp) |
+| Reconstructed game | Runs menu, race, camera, physics, actor, and display-list logic. | [Game code](GameCode.md) |
+| Custom engine | Adds native tracks, actors, editor tools, cameras, registries, and enhancements. | [Game code](GameCode.md#world-and-content-model) |
+| Platform services | Adapt input, timing, audio, storage, configuration, files, and dialogs. | [Platform services](Services.md) |
+| Resource layer | Resolves base, project, and mod assets into typed native objects. | [Resources](Resources.md) |
+| Graphics runtime | Interprets N64 display lists, applies interpolation, and drives a native GPU backend. | [Graphics](Graphics.md) |
+
+## Component chapters
+
+```mermaid
+flowchart TD
+    Runtime["Runtime<br/>overview"]
+    Game["Game code and<br/>custom engine"]
+    Host["Native host and<br/>port layer"]
+    Services["Platform and<br/>compatibility services"]
+    Resources["Resources<br/>and mods"]
+    Graphics["Graphics<br/>stack"]
+
+    Runtime --> Game
+    Runtime --> Host
+    Runtime --> Services
+    Runtime --> Resources
+    Runtime --> Graphics
+```
+
+The chapters follow ownership boundaries rather than directories alone.
+Reconstructed C and custom C++ are documented together where they jointly own
+gameplay; libultraship appears under the host or service that consumes it.
 
 ## Startup
 
