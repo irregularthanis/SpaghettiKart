@@ -51,19 +51,19 @@ state into that pool, closes the master display list, and submits it through
 `GameEngine::ProcessGfxCommands`.
 
 ```mermaid
-sequenceDiagram
-    participant Loop as Game loop
-    participant Pool as Gfx pool
-    participant Bridge as GameEngine
-    participant Fast3D as Fast3D
-    participant GPU as Native GPU API
+flowchart LR
+    Loop["Game loop<br/>selects visible work"]
+    Pool["Gfx pool<br/>receives commands"]
+    Complete["End display list<br/>and full sync"]
+    Bridge["GameEngine<br/>graphics bridge"]
+    Fast3D["Fast3D interprets<br/>commands and matrices"]
+    GPU["Native GPU API<br/>draws and presents"]
 
-    Loop->>Pool: Emit course, kart, actor and UI commands
-    Loop->>Pool: End display list and full sync
-    Loop->>Bridge: Graphics_PushFrame(pool)
-    Bridge->>Fast3D: Draw commands with matrix replacements
-    Fast3D->>GPU: Create/update resources and issue draws
-    GPU-->>Fast3D: Present completed frame
+    Loop -->|"course, kart,<br/>actor and UI"| Pool
+    Pool --> Complete
+    Complete -->|"Graphics_PushFrame"| Bridge
+    Bridge -->|"commands and matrix<br/>replacements"| Fast3D
+    Fast3D --> GPU
 ```
 
 References: [`thread5_iteration`](../../src/main.c),
