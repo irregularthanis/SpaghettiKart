@@ -3,6 +3,7 @@
 ## Contents
 
 - [Responsibility](#responsibility)
+- [Relationship to game state](#relationship-to-game-state)
 - [Ownership split](#ownership-split)
 - [Game-state machine](#game-state-machine)
 - [Racing frame](#racing-frame)
@@ -22,6 +23,18 @@ extensions into the same native executable.
 
 There is no guest CPU or separately loaded game module. The distinction below
 describes code ownership and data models inside one address space.
+
+## Relationship to game state
+
+Reconstructed C owns most retained simulation globals, arrays, and structures.
+The custom C++ engine owns additional gameplay objects under `World`. Both are
+game-side code: the native host supplies platform facilities but does not own
+kart physics, race rules, or the active world.
+
+The two game-code families can update state directly or through `CM_*`
+bridges. Host services normally publish input, resources, settings, or events
+first; game code then decides their gameplay effect. See
+[Game state and mutation](GameState.md) for the concrete mechanics.
 
 ## Ownership split
 

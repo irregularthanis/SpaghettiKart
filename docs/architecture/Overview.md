@@ -128,6 +128,7 @@ contracts.
 | [Build](Build.md) | Source, dependencies, asset generation, compilation, CI, and packaging |
 | [Runtime](Runtime.md) | Process entities, startup, frame loop, audio, input, and persistence |
 | [Game code](GameCode.md) | Reconstructed game loop, custom C++ engine, shared state, and C/C++ bridges |
+| [Game state](GameState.md) | State ownership, direct and bridged mutation, service publication, and frame-boundary changes |
 | [Native host](Host.md) | Process entry, `GameEngine`, libultraship context, UI, and lifecycle |
 | [Platform services](Services.md) | Input, timing, audio, storage, configuration, and native adaptation |
 | [Resources](Resources.md) | ROM validation, O2R generation, resource factories, and mod layering |

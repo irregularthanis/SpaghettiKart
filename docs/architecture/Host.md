@@ -19,6 +19,12 @@ The native host enters the process and connects game code to platform
 facilities. `GameEngine` specializes libultraship for SpaghettiKart; it does
 not own race rules or simulate an N64 CPU.
 
+Host code owns service and lifecycle state, not the active race model. It can
+read or update game globals at explicit integration points, but its usual role
+is to publish controller data, resources, settings, audio completion, and
+queued requests that game-owned code consumes. See
+[Game state and mutation](GameState.md).
+
 ## Owned components
 
 | Component | Responsibility | Source |

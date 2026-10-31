@@ -4,6 +4,7 @@
 
 - [Responsibility](#responsibility)
 - [Service map](#service-map)
+- [How services affect game state](#how-services-affect-game-state)
 - [Input](#input)
 - [Timing and message APIs](#timing-and-message-apis)
 - [Audio](#audio)
@@ -21,6 +22,23 @@ explicit port bridges into libultraship or the operating system.
 
 They are compatibility functions inside the native program, not a complete
 emulated N64 hardware environment.
+
+## How services affect game state
+
+A service result does not become gameplay merely because all components share
+an address space. Each adapter has an explicit publication mechanism:
+
+| Service result | Publication mechanism | Game-side effect |
+| --- | --- | --- |
+| Controller sample | Copy from `OSContPad` into `gControllers` | Player, menu, camera, and editor logic reads the new buttons and sticks |
+| Resource lookup | Return a typed object or borrowed native pointer | Game or graphics code consumes archive-backed data |
+| CVar | Read at a named decision point | Selects an enhancement, rendering option, or gameplay parameter |
+| Audio work | Mix into a completed buffer and signal the waiting frame | Produces sound without exposing partially written output |
+| Reset request | Atomic pending flag consumed at the next frame boundary | Coordinated game fields change through the normal state-transition protocol |
+| Controller Pak operation | Explicit file read or write | Durable data enters or leaves live game structures through the caller |
+
+See [Game state and mutation](GameState.md) for ownership, direct writes,
+bridges, deferred changes, and concrete state-flow examples.
 
 ## Service map
 

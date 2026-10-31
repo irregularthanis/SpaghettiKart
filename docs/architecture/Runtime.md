@@ -4,6 +4,7 @@
 
 - [High-level view](#high-level-view)
 - [Runtime entities](#runtime-entities)
+- [State ownership](#state-ownership)
 - [Component chapters](#component-chapters)
 - [Startup](#startup)
 - [Frame lifecycle](#frame-lifecycle)
@@ -52,9 +53,29 @@ heritage, not a sandbox or separately loaded module.
 | libultraship context | Owns configuration, controllers, resource/archive managers, window, GUI, and native audio output. | [libultraship project](https://github.com/Kenix3/libultraship) |
 | Reconstructed game | Runs menu, race, camera, physics, actor, and display-list logic. | [Game code](GameCode.md) |
 | Custom engine | Adds native tracks, actors, editor tools, cameras, registries, and enhancements. | [Game code](GameCode.md#world-and-content-model) |
+| Game state | Stores the active simulation in retained C objects and custom `World` objects. | [Game state and mutation](GameState.md) |
 | Platform services | Adapt input, timing, audio, storage, configuration, files, and dialogs. | [Platform services](Services.md) |
 | Resource layer | Resolves base, project, and mod assets into typed native objects. | [Resources](Resources.md) |
 | Graphics runtime | Interprets N64 display lists, applies interpolation, and drives a native GPU backend. | [Graphics](Graphics.md) |
+
+## State ownership
+
+The reconstructed game and custom game-side C++ own live simulation state.
+The host owns process and platform facilities. Services normally affect the
+game by publishing controller values, resource pointers, settings, completed
+audio buffers, or deferred requests at an explicit boundary.
+
+```mermaid
+flowchart LR
+    Host["Host and<br/>services"] -->|"Publish native results"| State["Shared native<br/>game state"]
+    Game["Reconstructed<br/>game code"] <-->|"Direct reads<br/>and writes"| State
+    Custom["Custom game-side<br/>C++"] <-->|"CM_* bridges and<br/>owned objects"| State
+    State -->|"Derived commands<br/>and samples"| Output["Graphics and<br/>audio output"]
+```
+
+There is no guest memory boundary between these boxes. See
+[Game state and mutation](GameState.md) for the stores, transition protocol,
+service publication paths, and concrete examples.
 
 ## Component chapters
 
@@ -62,12 +83,14 @@ heritage, not a sandbox or separately loaded module.
 flowchart TD
     Runtime["Runtime<br/>overview"]
     Game["Game code and<br/>custom engine"]
+    State["Game state and<br/>mutation"]
     Host["Native host and<br/>port layer"]
     Services["Platform and<br/>compatibility services"]
     Resources["Resources<br/>and mods"]
     Graphics["Graphics<br/>stack"]
 
     Runtime --> Game
+    Runtime --> State
     Runtime --> Host
     Runtime --> Services
     Runtime --> Resources
@@ -162,6 +185,7 @@ flowchart TD
 | Game ↔ Fast3D | Game code emits N64 `Gfx` commands and matrices | Preserves the original rendering vocabulary while targeting modern APIs. |
 | Game ↔ audio worker | A frame requests N64 audio generation and HMAS mixing, then synchronizes completion | Keeps audio production off the main execution interval while publishing a complete buffer. |
 | Game ↔ custom engine | C-callable `CM_*`, `HM_*`, and `GameEngine_*` bridges | Allows reconstructed C and handwritten C++ systems to cooperate directly. |
+| Services → game state | Explicit copies, resolved pointers, completed buffers, CVars, and queued requests | Converts native facilities into values or events the game can safely consume. |
 
 ## Input and configuration
 
